@@ -1,4 +1,5 @@
 import { Layout, Menu } from 'antd';
+import DatePicker from 'components/DatePicker';
 import React from 'react';
 import './App.css';
 
@@ -18,6 +19,7 @@ function App({}: AppProps) {
       </Header>
       <Content style={{ padding: '0 50px', marginTop: 64 }}>
         <div style={{ padding: 24, minHeight: 380 }}>Content</div>
+        <DatePicker />
       </Content>
       <Footer style={{ textAlign: 'center' }}>
         KuppaKofi ©2020 Created by Jade with ♥️
