@@ -13,7 +13,14 @@ module.exports = {
     /* ... */
   ],
   installOptions: {
-    /* ... */
+    rollup: {
+      plugins: [
+        require('rollup-plugin-styles')({
+          less: { javascriptEnabled: true },
+        }),
+      ],
+    },
+    treeshake: true,
   },
   devOptions: {
     /* ... */
