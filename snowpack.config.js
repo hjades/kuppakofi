@@ -1,4 +1,6 @@
 /** @type {import("snowpack").SnowpackUserConfig } */
+require('./src/server/index.js');
+
 module.exports = {
   mount: {
     public: '/',
@@ -29,7 +31,7 @@ module.exports = {
     /* ... */
   },
   proxy: {
-    /* ... */
+    '/api': `http://localhost:${process.env.PROXY_PORT || 8081}/api`,
   },
   alias: {
     components: './src/components',
