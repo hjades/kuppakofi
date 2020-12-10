@@ -1,9 +1,9 @@
 import { Layout, Menu } from 'antd';
-import DatePicker from 'components/DatePicker';
 import React from 'react';
 import { Link, Route, Switch, useLocation } from 'react-router-dom';
 import Home from 'views/Home';
 import Shop from 'views/Shop';
+import Transactions from 'views/Transactions';
 import './App.css';
 
 interface AppProps {}
@@ -27,12 +27,17 @@ function App({}: AppProps) {
           <Menu.Item key="/shop">
             <Link to="/shop">Shop</Link>
           </Menu.Item>
+          <Menu.Item key="/transactions">
+            <Link to="/transactions">Transactions</Link>
+          </Menu.Item>
         </Menu>
       </Header>
       <Content style={{ padding: '0 50px', marginTop: 64 }}>
         <div style={{ padding: 24, minHeight: 380 }}>
-          <DatePicker />
           <Switch>
+            <Route path="/transactions">
+              <Transactions />
+            </Route>
             <Route path="/shop">
               <Shop />
             </Route>
