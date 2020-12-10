@@ -11,6 +11,7 @@
     "react-dom": "^17.0.0"
   },
   "devDependencies": {
+    "@paypal/react-paypal-js": "^3.0.3",
     "@snowpack/plugin-dotenv": "^2.0.5",
     "@snowpack/plugin-react-refresh": "^2.3.8",
     "@snowpack/plugin-typescript": "^1.1.1",
