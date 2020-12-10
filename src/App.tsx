@@ -1,4 +1,4 @@
-import { Layout, Menu, Typography } from 'antd';
+import { Layout, Menu } from 'antd';
 import DatePicker from 'components/DatePicker';
 import React from 'react';
 import { Link, Route, Switch, useLocation } from 'react-router-dom';
@@ -16,16 +16,16 @@ function App({}: AppProps) {
   return (
     <Layout>
       <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
-        <Menu theme="dark" mode="horizontal" selectedKeys={[location.pathname]}>
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={[location.pathname]}
+        >
           <Menu.Item key="/">
-            <Link to="/" component={Typography.Link}>
-              Home
-            </Link>
+            <Link to="/">Home</Link>
           </Menu.Item>
           <Menu.Item key="/shop">
-            <Link to="/shop" component={Typography.Link}>
-              Shop
-            </Link>
+            <Link to="/shop">Shop</Link>
           </Menu.Item>
         </Menu>
       </Header>
