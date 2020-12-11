@@ -1,8 +1,8 @@
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { createBrowserHistory } from 'history';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router } from 'react-router-dom';
-import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import App from './App';
 import './index.css';
 
