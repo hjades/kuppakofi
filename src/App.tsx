@@ -1,6 +1,7 @@
 import { Layout, Menu } from 'antd';
 import React from 'react';
 import { Link, Route, Switch, useLocation } from 'react-router-dom';
+import Balance from 'views/Balance';
 import Home from 'views/Home';
 import Shop from 'views/Shop';
 import Transactions from 'views/Transactions';
@@ -30,6 +31,9 @@ function App({}: AppProps) {
           <Menu.Item key="/transactions">
             <Link to="/transactions">Transactions</Link>
           </Menu.Item>
+          <Menu.Item key="/balance">
+            <Link to="/balance">Balance</Link>
+          </Menu.Item>
         </Menu>
       </Header>
       <Content style={{ padding: '0 50px', marginTop: 64 }}>
@@ -37,6 +41,9 @@ function App({}: AppProps) {
           <Switch>
             <Route path="/transactions">
               <Transactions />
+            </Route>
+            <Route path="/balance">
+              <Balance />
             </Route>
             <Route path="/shop">
               <Shop />
