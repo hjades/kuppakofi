@@ -1,15 +1,17 @@
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { createBrowserHistory } from 'history';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router } from 'react-router-dom';
-import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import App from './App';
 import './index.css';
 
 const history = createBrowserHistory();
 
 const paypalOptions = {
-  'client-id': 'Ad8X9SXuqr7REcI2tKg9HzQ3C8ZEexFHm6Hnl3k7n3AM1sD5SYsidx3mPIsbc3Jtx02E9V8SjKGkSVIX',
+  'client-id':
+    import.meta.env.SNOWPACK_PUBLIC_CLIENT_ID ||
+    'Ad8X9SXuqr7REcI2tKg9HzQ3C8ZEexFHm6Hnl3k7n3AM1sD5SYsidx3mPIsbc3Jtx02E9V8SjKGkSVIX',
   vault: true,
 };
 

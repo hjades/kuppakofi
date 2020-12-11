@@ -29,7 +29,7 @@ router
   })
   .get('/token', async (ctx) => {
     let result = {};
-    const auth = new Buffer(
+    const auth = Buffer.from(
       `${process.env.CLIENT_ID}:${process.env.SECRET}`,
     ).toString('base64');
     const params = new URLSearchParams();

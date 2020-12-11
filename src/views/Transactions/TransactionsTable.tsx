@@ -5,6 +5,7 @@ import React, { FC, useState } from 'react';
 interface TransactionsTableProps {
   fetchData(pagination: TablePaginationConfig): void;
   data: TransactionDetail[];
+  total: number;
   loading: boolean;
 }
 
@@ -44,10 +45,17 @@ const columns: ColumnsType<TransactionDetail> = [
 const TransactionsTable: FC<TransactionsTableProps> = ({
   fetchData = () => {},
   data = [],
+  total = 0,
   loading = false,
 }) => {
   const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(1);
+
+  const handleChange = async (pagination: TablePaginationConfig) => {
+    await fetchData(pagination);
+    setCurrent(pagination.current || 1);
+    setPageSize(pagination.pageSize || 10);
+  };
 
   return (
     <Table
@@ -56,9 +64,9 @@ const TransactionsTable: FC<TransactionsTableProps> = ({
         record.transaction_info.transaction_id
       }
       dataSource={data}
-      pagination={{ current, pageSize }}
+      pagination={{ current, pageSize, total }}
       loading={loading}
-      onChange={fetchData}
+      onChange={handleChange}
     />
   );
 };

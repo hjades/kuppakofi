@@ -12,6 +12,7 @@ interface TransactionsProps {}
 const Transactions: FC = ({}: TransactionsProps) => {
   const [value, setValue] = useState(null as RangeValue<Date>);
   const [data, setData] = useState([]);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const fetchData = async (pagination: TablePaginationConfig) => {
@@ -33,6 +34,8 @@ const Transactions: FC = ({}: TransactionsProps) => {
     url.search = new URLSearchParams({
       start_date,
       end_date,
+      page: String(pagination.current || 1),
+      page_size: String(pagination.pageSize || 10),
     }).toString();
 
     const transResp = await fetch(url.toString(), {
@@ -41,6 +44,7 @@ const Transactions: FC = ({}: TransactionsProps) => {
     const trans = await transResp.json();
 
     setData(trans.transaction_details);
+    setTotal(trans.total_items);
     setLoading(false);
   };
 
@@ -62,6 +66,7 @@ const Transactions: FC = ({}: TransactionsProps) => {
         <TransactionsTable
           fetchData={fetchData}
           data={data}
+          total={total}
           loading={loading}
         />
       </section>
