@@ -674,6 +674,13 @@
   resolved "https://registry.yarnpkg.com/@types/parse5/-/parse5-5.0.3.tgz#e7b5aebbac150f8b5fdd4a46e7f0bd8e65e19109"
   integrity sha512-kUNnecmtkunAoQ3CnjmMkzNU/gtxG8guhi+Fk2U/kOpIKjIMKnXGp4IJCgQJrXSgMsWYimYG4TGjz/UzbGEBTw==
 
+"@types/paypal-rest-sdk@^1.7.5":
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/@types/paypal-rest-sdk/-/paypal-rest-sdk-1.7.5.tgz#a6524a5779ab369e75da655eedde150662f0cb38"
+  integrity sha512-CpgTGddyhc8QDd/gZ8dm3YpppKS6zh9BX+f9xr5spxZaNqeGkG/EnTMj1s1l7OcEqyXvh1dbqvo0Sa65qs1Upg==
+  dependencies:
+    "@types/node" "*"
+
 "@types/prop-types@*":
   version "15.7.3"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"

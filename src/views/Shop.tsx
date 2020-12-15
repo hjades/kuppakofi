@@ -1,3 +1,4 @@
+import { Row } from 'antd';
 import React from 'react';
 import AdvancedPaymentCard from './AdvancedPayments';
 import StandardPaymentsCard from './StandardPayments';
@@ -6,10 +7,10 @@ interface ShopProps {}
 
 const Shop: React.FC = ({}: ShopProps) => {
   return (
-    <section>
+    <Row>
       <StandardPaymentsCard />
       <AdvancedPaymentCard />
-    </section>
+    </Row>
   );
 };
 
