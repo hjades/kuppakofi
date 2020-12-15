@@ -52,26 +52,6 @@ router
     );
     result = await resp.json();
     ctx.body = JSON.stringify(result);
-  })
-  .get('/create_order', async (ctx) => {
-    const result = await createOrder();
-    ctx.body = JSON.stringify(result);
-  })
-  .get('/update_order', async (ctx) => {
-    const result = await updateOrder(ctx.request.query.oid);
-    ctx.body = JSON.stringify(result);
-  })
-  .get('/show_order', async (ctx) => {
-    const result = await showOrder(ctx.request.query.oid);
-    ctx.body = JSON.stringify(result);
-  })
-  .get('/authorize_order', async (ctx) => {
-    const result = await authorizeOrder(ctx.request.query.oid);
-    ctx.body = JSON.stringify(result);
-  })
-  .get('/capture_order', async (ctx) => {
-    const result = await captureOrder(ctx.request.query.oid);
-    ctx.body = JSON.stringify(result);
   });
 
 app.use(router.routes()).use(router.allowedMethods());

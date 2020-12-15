@@ -1,8 +1,14 @@
 import { ShoppingOutlined } from '@ant-design/icons';
-import { Avatar, Button, Card, Drawer, Spin } from 'antd';
-import to from 'await-to-js';
-import axios from 'axios';
+import { Alert, Avatar, Button, Card, Collapse, Drawer, Spin } from 'antd';
+import type { AlertProps } from 'antd/lib/alert';
+import type { Link } from 'paypal-rest-sdk';
 import React, { useEffect, useState } from 'react';
+import {
+  captureOrder,
+  createOrder,
+  showOrder,
+  updateOrder
+} from '../../api/paypal';
 
 const { Meta } = Card;
 
@@ -10,10 +16,12 @@ interface AdvancedPaymentProps {}
 
 const AdvancedPayment: React.FC = ({}: AdvancedPaymentProps) => {
   const [visible, setVisible] = useState(false);
-  const [detail, setDetail] = useState('Click button to create order:' as string);
+  const [detail, setDetail] = useState('' as string);
+  const [detailType, setDetailType] = useState('success' as AlertProps['type']);
   const [oid, setOid] = useState('' as string);
-  const [isAuth, setIsAuth] = useState(false as Boolean);
+  const [updated, setUpdated] = useState(false as Boolean);
   const [loading, setLoading] = useState('' as string);
+  const [links, setLinks] = useState([] as Link[]);
 
   useEffect(() => {
     if (oid) {
@@ -29,31 +37,63 @@ const AdvancedPayment: React.FC = ({}: AdvancedPaymentProps) => {
     setVisible(true);
   };
 
+  const handleClickLink = (link: Link) => () => {
+    window.open(link.href, '', 'menubar=0,height=700,width=500');
+  };
+
   const handleShow = async () => {
     setLoading('Fetch order...');
-    const [err, resp] = await to(axios.get('/api/show_order?oid=' + oid));
+    const [err, resp] = await showOrder(oid);
+    if (err) {
+      setDetail(JSON.stringify(err));
+      setDetailType('error');
+      setLoading('');
+      return;
+    }
     setDetail(JSON.stringify(resp));
+    setDetailType('success');
     setLoading('');
   };
 
   const handleCreate = async () => {
     setLoading('Create order...');
-    const [err, resp] = await to(axios.get('/api/create_order'));
-    setOid(resp?.data.id);
+    const [err, resp] = await createOrder();
+    if (err) {
+      setDetail(JSON.stringify(err));
+      setDetailType('error');
+      setLoading('');
+      return;
+    }
+    setOid(resp?.data.id || '');
+    setLinks(resp?.data.links || []);
   };
 
-  const handleAuthorize = async () => {
-    setLoading('Authorize order...');
-    const [err, resp] = await to(axios.get('/api/authorize_order?oid=' + oid));
+  const handleUpdate = async () => {
+    setLoading('Update order...');
+    const [err, resp] = await updateOrder(oid);
+    if (err) {
+      setDetail(JSON.stringify(err));
+      setDetailType('error');
+      setLoading('');
+      return;
+    }
     setDetail(JSON.stringify(resp));
-    setIsAuth(true);
+    setDetailType('success');
+    setUpdated(true);
     setLoading('');
   };
 
   const handleCapture = async () => {
     setLoading('Capture order...');
-    const [err, resp] = await to(axios.get('/api/capture_order?oid=' + oid));
+    const [err, resp] = await captureOrder(oid);
+    if (err) {
+      setDetail(JSON.stringify(err));
+      setDetailType('error');
+      setLoading('');
+      return;
+    }
     setDetail(JSON.stringify(resp));
+    setDetailType('success');
     setLoading('');
   };
 
@@ -102,15 +142,32 @@ const AdvancedPayment: React.FC = ({}: AdvancedPaymentProps) => {
           <Spin tip={loading}></Spin>
         ) : (
           <>
-            <p>{detail}</p>
-            {oid ? (
-              isAuth ? (
-                <Button onClick={handleCapture}>Capture Order</Button>
-              ) : (
-                <Button onClick={handleAuthorize}>Authorize Order</Button>
-              )
-            ) : (
-              <Button onClick={handleCreate}>Create Order</Button>
+            <Collapse defaultActiveKey={['1', '2']}>
+              <Collapse.Panel header="Customer" key="1">
+                <p>
+                  {links &&
+                    links.length !== 0 &&
+                    links.map((link) => (
+                      <Button onClick={handleClickLink(link)}>
+                        {link.rel}
+                      </Button>
+                    ))}
+                </p>
+              </Collapse.Panel>
+              <Collapse.Panel header="Server" key="2">
+                {!updated && (
+                  <Button onClick={handleUpdate}>Update Order</Button>
+                )}
+                {oid && <Button onClick={handleCapture}>Capture Order</Button>}
+                {oid && <Button onClick={handleShow}>Fetch Order</Button>}
+                {!oid && <Button onClick={handleCreate}>Create Order</Button>}
+              </Collapse.Panel>
+            </Collapse>
+            {detail && (
+              <>
+                <p>Response:</p>
+                <Alert message={detail} type={detailType} />
+              </>
             )}
           </>
         )}
