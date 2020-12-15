@@ -1,5 +1,15 @@
 import { ShoppingOutlined } from '@ant-design/icons';
-import { Alert, Avatar, Button, Card, Collapse, Drawer, Spin } from 'antd';
+import {
+  Alert,
+  Avatar,
+  Button,
+  Card,
+  Collapse,
+  Drawer,
+  Slider,
+  Spin,
+  Typography
+} from 'antd';
 import type { AlertProps } from 'antd/lib/alert';
 import type { Link } from 'paypal-rest-sdk';
 import React, { useEffect, useState } from 'react';
@@ -10,9 +20,14 @@ import {
   updateOrder
 } from '../../api/paypal';
 
+const { Paragraph } = Typography;
 const { Meta } = Card;
 
 interface AdvancedPaymentProps {}
+
+const EnhancedButton = (props: any) => (
+  <Button style={{ marginRight: 8 }} {...props} />
+);
 
 const AdvancedPayment: React.FC = ({}: AdvancedPaymentProps) => {
   const [visible, setVisible] = useState(false);
@@ -22,6 +37,7 @@ const AdvancedPayment: React.FC = ({}: AdvancedPaymentProps) => {
   const [updated, setUpdated] = useState(false as Boolean);
   const [loading, setLoading] = useState('' as string);
   const [links, setLinks] = useState([] as Link[]);
+  const [amount, setAmount] = useState(200);
 
   useEffect(() => {
     if (oid) {
@@ -57,7 +73,7 @@ const AdvancedPayment: React.FC = ({}: AdvancedPaymentProps) => {
 
   const handleCreate = async () => {
     setLoading('Create order...');
-    const [err, resp] = await createOrder();
+    const [err, resp] = await createOrder(amount);
     if (err) {
       setDetail(JSON.stringify(err));
       setDetailType('error');
@@ -70,7 +86,7 @@ const AdvancedPayment: React.FC = ({}: AdvancedPaymentProps) => {
 
   const handleUpdate = async () => {
     setLoading('Update order...');
-    const [err, resp] = await updateOrder(oid);
+    const [err, resp] = await updateOrder(oid, amount);
     if (err) {
       setDetail(JSON.stringify(err));
       setDetailType('error');
@@ -129,48 +145,83 @@ const AdvancedPayment: React.FC = ({}: AdvancedPaymentProps) => {
               textAlign: 'right',
             }}
           >
-            <Button onClick={handleClose} style={{ marginRight: 8 }}>
-              Cancel
-            </Button>
-            <Button onClick={handleClose} type="primary">
-              Submit
-            </Button>
+            <EnhancedButton onClick={handleClose}>Cancel</EnhancedButton>
           </div>
         }
       >
-        {loading ? (
-          <Spin tip={loading}></Spin>
-        ) : (
-          <>
-            <Collapse defaultActiveKey={['1', '2']}>
-              <Collapse.Panel header="Customer" key="1">
-                <p>
-                  {links &&
-                    links.length !== 0 &&
-                    links.map((link) => (
-                      <Button onClick={handleClickLink(link)}>
-                        {link.rel}
-                      </Button>
-                    ))}
-                </p>
-              </Collapse.Panel>
-              <Collapse.Panel header="Server" key="2">
-                {!updated && (
-                  <Button onClick={handleUpdate}>Update Order</Button>
-                )}
-                {oid && <Button onClick={handleCapture}>Capture Order</Button>}
-                {oid && <Button onClick={handleShow}>Fetch Order</Button>}
-                {!oid && <Button onClick={handleCreate}>Create Order</Button>}
-              </Collapse.Panel>
-            </Collapse>
-            {detail && (
-              <>
-                <p>Response:</p>
-                <Alert message={detail} type={detailType} />
-              </>
-            )}
-          </>
-        )}
+        <Spin tip={loading} spinning={!!loading} delay={100}>
+          <Collapse defaultActiveKey={['Server', 'Customer']}>
+            <Collapse.Panel header="Customer" key="Customer">
+              <p>
+                {links &&
+                  links.length !== 0 &&
+                  links.filter(link => link.method === 'GET').map((link) => (
+                    <EnhancedButton onClick={handleClickLink(link)}>
+                      {link.rel}
+                    </EnhancedButton>
+                  ))}
+              </p>
+            </Collapse.Panel>
+            <Collapse.Panel header="Server" key="Server">
+              {oid && (
+                <Paragraph>
+                  <blockquote>For fetch order detail:</blockquote>
+                  <EnhancedButton onClick={handleShow} type="primary" ghost>
+                    Fetch Order
+                  </EnhancedButton>
+                </Paragraph>
+              )}
+
+              {!oid && (
+                <Paragraph>
+                  <blockquote>For create order with amount:</blockquote>
+                  <Slider
+                    defaultValue={amount}
+                    min={0}
+                    max={1000}
+                    onChange={setAmount}
+                  />
+
+                  <EnhancedButton onClick={handleCreate}>
+                    Create Order
+                  </EnhancedButton>
+                </Paragraph>
+              )}
+              {oid && (
+                <Paragraph>
+                  <blockquote>For update order amount:</blockquote>
+                  <Slider
+                    defaultValue={amount}
+                    min={0}
+                    max={1000}
+                    onChange={setAmount}
+                  />
+                  <EnhancedButton onClick={handleUpdate}>
+                    Update Order
+                  </EnhancedButton>
+                </Paragraph>
+              )}
+
+              {oid && (
+                <Paragraph>
+                  <blockquote>For capture order amount:</blockquote>
+                  <EnhancedButton onClick={handleCapture} type="primary">
+                    Capture Order
+                  </EnhancedButton>
+                </Paragraph>
+              )}
+            </Collapse.Panel>
+          </Collapse>
+          <br />
+          {detail && (
+            <Alert
+              message="Response"
+              description={detail}
+              type={detailType}
+              showIcon
+            />
+          )}
+        </Spin>
       </Drawer>
     </>
   );

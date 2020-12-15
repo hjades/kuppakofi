@@ -2,13 +2,6 @@ require('dotenv').config();
 const Koa = require('koa');
 const Router = require('@koa/router');
 const fetch = require('node-fetch');
-const {
-  createOrder,
-  updateOrder,
-  showOrder,
-  authorizeOrder,
-  captureOrder,
-} = require('./paypal');
 
 const app = new Koa();
 
@@ -34,6 +27,10 @@ const router = new Router({
 router
   .get('/', (ctx, next) => {
     ctx.body = 'Hello World!';
+  })
+  .post('/webhook', (ctx) => {
+    console.log(ctx);
+    ctx.body = '';
   })
   .get('/token', async (ctx) => {
     let result = {};

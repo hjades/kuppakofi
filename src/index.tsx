@@ -2,7 +2,9 @@ import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { createBrowserHistory } from 'history';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router } from 'react-router-dom';
+import { Route, Router, Switch } from 'react-router-dom';
+import Cancel from 'views/Info/Cancel';
+import Success from 'views/Info/Success';
 import App from './App';
 import './index.css';
 
@@ -18,7 +20,15 @@ const paypalOptions = {
 ReactDOM.render(
   <PayPalScriptProvider options={paypalOptions}>
     <Router history={history}>
-      <App />
+      <Switch>
+        <Route path="/info/success">
+          <Success />
+        </Route>
+        <Route path="/info/cancel">
+          <Cancel />
+        </Route>
+        <Route component={App} />
+      </Switch>
     </Router>
   </PayPalScriptProvider>,
   document.getElementById('root'),
