@@ -7,7 +7,7 @@ const getAccessToken = async () => {
   return token;
 };
 
-export const createOrder = async () => {
+export const createOrder = async (amount: Number) => {
   const token = await getAccessToken();
   return to(
     axios({
@@ -22,16 +22,20 @@ export const createOrder = async () => {
           {
             amount: {
               currency_code: 'USD',
-              value: '100.00',
+              value: String(amount),
             },
           },
         ],
+        application_context: {
+          return_url: 'http://localhost:8080/info/success',
+          cancel_url: 'http://localhost:8080/info/cancel',
+        },
       },
     }),
   );
 };
 
-export const updateOrder = async (oid: string) => {
+export const updateOrder = async (oid: string, amount: Number) => {
   const token = await getAccessToken();
   return to(
     axios({
@@ -46,7 +50,7 @@ export const updateOrder = async (oid: string) => {
           path: "/purchase_units/@reference_id=='default'/amount",
           value: {
             currency_code: 'USD',
-            value: '200.00',
+            value: String(amount),
           },
         },
       ],
