@@ -50,7 +50,7 @@ const Subscription: React.FC<SubscriptionProps> = ({}) => {
       setLoading('');
       return;
     }
-    setDetail(JSON.stringify(resp));
+    setDetail(JSON.stringify(resp?.data.plans));
     setDetailType('success');
     setLoading('');
   };

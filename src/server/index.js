@@ -68,6 +68,7 @@ router
         headers: {
           Authorization: ctx.request.header.Authorization,
           'Content-Type': ctx.request.header['Content-Type'],
+          Prefer: 'return=representation',
         },
       },
     );
