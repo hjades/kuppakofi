@@ -8,6 +8,7 @@
     "baseUrl": "./",
     /* paths - If you configure Snowpack import aliases, add them here. */
     "paths": {
+      "api/*": ["src/api/*"],
       "components/*": ["src/components/*"],
       "views/*": ["src/views/*"]
     },

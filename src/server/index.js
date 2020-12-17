@@ -20,19 +20,9 @@ app.use(async (ctx, next) => {
   ctx.set('X-Response-Time', `${ms}ms`);
 });
 
-const router = new Router({
-  prefix: '/api',
-});
-
-router
-  .get('/', (ctx, next) => {
-    ctx.body = 'Hello World!';
-  })
-  .post('/webhook', (ctx) => {
-    console.log(ctx);
-    ctx.body = '';
-  })
-  .get('/token', async (ctx) => {
+// token
+app.use(async (ctx, next) => {
+  if (ctx.path !== '/api/webhook') {
     let result = {};
     const auth = Buffer.from(
       `${process.env.CLIENT_ID}:${process.env.SECRET}`,
@@ -48,7 +38,42 @@ router
       },
     );
     result = await resp.json();
+    const token = result?.access_token;
+    ctx.request.header = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+  }
+  await next();
+});
+
+const router = new Router({
+  prefix: '/api',
+});
+
+router
+  .get('/', (ctx) => {
+    ctx.body = 'Hello World!';
+  })
+  .post('/webhook', (ctx) => {
+    console.log(ctx);
+    ctx.body = '';
+  })
+  .get('/billing/plans', async (ctx) => {
+    let result = {};
+    const resp = await fetch(
+      'https://api.sandbox.paypal.com/v1/billing/plans',
+      {
+        method: 'get',
+        headers: {
+          Authorization: ctx.request.header.Authorization,
+          'Content-Type': ctx.request.header['Content-Type'],
+        },
+      },
+    );
+    result = await resp.json();
     ctx.body = JSON.stringify(result);
+    ctx.set(resp.headers.raw());
   });
 
 app.use(router.routes()).use(router.allowedMethods());
